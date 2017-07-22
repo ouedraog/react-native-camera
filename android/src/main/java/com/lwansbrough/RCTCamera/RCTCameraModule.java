@@ -669,6 +669,30 @@ public class RCTCameraModule extends ReactContextBaseJavaModule
         promise.resolve(null != flashModes && !flashModes.isEmpty());
     }
 
+    @ReactMethod
+         public void pauseCapture(final Promise promise) {
+        if (mRecordingPromise != null) {
+            if(mMediaRecorder != null){
+                mMediaRecorder.pause();
+            }
+            promise.resolve("Paused recording.");
+        } else {
+            promise.resolve("Not recording.");
+        }
+    }
+
+    @ReactMethod
+    public void resumeCapture(final Promise promise) {
+        if (mRecordingPromise != null) {
+            if(mMediaRecorder != null){
+                mMediaRecorder.resume();
+            }
+            promise.resolve("Resume recording.");
+        } else {
+            promise.resolve("Not recording.");
+        }
+    }
+
     private File getOutputMediaFile(int type) {
         // Get environment directory type id from requested media type.
         String environmentDirectoryType;

@@ -147,7 +147,8 @@ export default class Camera extends Component {
     super();
     this.state = {
       isAuthorized: false,
-      isRecording: false
+      isRecording: false,
+      isPaused: true
     };
   }
 
@@ -229,7 +230,7 @@ export default class Camera extends Component {
     if (options.mode === Camera.constants.CaptureMode.video) {
       options.totalSeconds = (options.totalSeconds > -1 ? options.totalSeconds : -1);
       options.preferredTimeScale = options.preferredTimeScale || 30;
-      this.setState({ isRecording: true });
+      this.setState({ isRecording: true, isPaused:false });
     }
 
     return CameraManager.capture(options);
@@ -237,10 +238,26 @@ export default class Camera extends Component {
 
   stopCapture() {
     if (this.state.isRecording) {
-      this.setState({ isRecording: false });
+      this.setState({ isRecording: false, isPaused: true });
       return CameraManager.stopCapture();
     }
     return Promise.resolve("Not Recording.");
+  }
+
+  pauseCapture() {
+    if (this.state.isRecording && !this.state.isPaused) {
+      this.setState({ isPaused: true });
+      return CameraManager.pauseCapture();
+    }
+    return Promise.resolve("Not Recording or already paused.");
+  }
+
+  resumeCapture() {
+    if (this.state.isRecording && this.state.isPaused) {
+      this.setState({ isPaused: false });
+      return CameraManager.resumeCapture();
+    }
+    return Promise.resolve("Not Recording or already paused.");
   }
 
   getFOV() {
